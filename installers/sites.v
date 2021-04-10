@@ -30,21 +30,21 @@ pub fn sites_list(cmd &cli.Command) ? {
 	}
 }
 
-//if web true then will download websites
+// if web true then will download websites
 pub fn sites_download(cmd cli.Command, web bool) ? {
 	mut cfg := config_get(cmd) ?
 	mut gt := gittools.new(cfg.paths.code) or { return error('cannot load gittools:$err') }
 	// println(' - get all code repositories.')
 
 	for mut sc in cfg.sites {
-		if sc.cat == myconfig.SiteCat.web && !web{
+		if sc.cat == myconfig.SiteCat.web && !web {
 			continue
 		}
-		if sc.cat == myconfig.SiteCat.data && !web{
+		if sc.cat == myconfig.SiteCat.data && !web {
 			continue
-		}		
+		}
 		// println(' - get:$sc.url')
-		gt.repo_get_from_url(url: sc.url, pull: sc.pull) or {
+		gt.repo_get_from_url(url: sc.url, pull: sc.reset, branch: sc.branch) or {
 			println(' - WARNING: could not download site $sc.url, do you have rights?')
 		}
 	}
@@ -54,7 +54,7 @@ pub fn sites_install(cmd cli.Command) ? {
 	mut cfg := config_get(cmd) ?
 	println(' - sites install.')
 	mut first := true
-	sites_download(cmd,true) ?
+	sites_download(cmd, true) ?
 	for mut sc in cfg.sites_get() {
 		if sc.cat == myconfig.SiteCat.web {
 			website_install(sc.name, first, &cfg) ?
@@ -74,9 +74,7 @@ fn flag_message_get(cmd cli.Command) string {
 
 fn flag_repo_do(cmd cli.Command, reponame string, site myconfig.SiteConfig) bool {
 	flags := cmd.flags.get_all_found()
-	repo := flags.get_string('repo') or {
-		return true
-	}
+	repo := flags.get_string('repo') or { return true }
 	// println("match $reponame $site.shortname")
 	if reponame.to_lower().contains(repo.to_lower()) {
 		return true

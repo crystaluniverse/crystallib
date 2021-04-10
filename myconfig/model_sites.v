@@ -7,12 +7,12 @@ pub mut:
 	name      string
 	url       string
 	branch    string = 'default' // means is the default branch
-	pull      bool
+	reset     bool
 	cat       SiteCat
-	shortname     string
+	shortname string
 	path_code string
 	domains   []string
-	descr	 string
+	descr     string
 }
 
 pub enum SiteCat {
@@ -37,7 +37,7 @@ pub fn (config ConfigRoot) site_get(name string) ?SiteConfig {
 		}
 		if site.shortname.to_lower() == name.to_lower() {
 			return site
-		}		
+		}
 	}
 	return error('Cannot find wiki site with name: $name')
 }
@@ -107,11 +107,10 @@ pub fn (config ConfigRoot) reponame(name string) ?string {
 	return site.reponame()
 }
 
-
-//get the domain name
+// get the domain name
 pub fn (mut config ConfigRoot) domain_get(shortname string, cat SiteCat) ?string {
 	for s in config.sites {
-		if shortname == s.shortname && s.cat == cat{
+		if shortname == s.shortname && s.cat == cat {
 			return s.domains[0]
 		}
 	}
