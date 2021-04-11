@@ -107,6 +107,7 @@ fn site_config(mut c ConfigRoot) {
 		shortname: 'uhuru'
 		url: 'https://github.com/uhuru-me/info_uhuru'
 		domains: ['info.uhuru.me']
+		branch: 's'
 		descr: 'wiki for uhuru Peer2Peer Cloud.'
 	}
 	c.sites << SiteConfig{

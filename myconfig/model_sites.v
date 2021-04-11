@@ -6,8 +6,9 @@ pub struct SiteConfig {
 pub mut:
 	name      string
 	url       string
-	branch    string = 'default' // means is the default branch
-	reset     bool
+	branch    string
+	pull      bool // if set will pull but not reset
+	reset     bool // if set will reset & pull, reset means remove changes
 	cat       SiteCat
 	shortname string
 	path_code string
