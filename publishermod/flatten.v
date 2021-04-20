@@ -133,8 +133,9 @@ pub fn (mut publisher Publisher) flatten() ? {
 			os.cp(fileobj.path_get(mut publisher), dest_file) ?
 		}
 
-		myconfig.save('') ?
 	}
+		myconfig.save('') ?
+
 }
 
 [if trace_progress]
