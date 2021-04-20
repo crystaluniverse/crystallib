@@ -72,6 +72,7 @@ mut:
 // THIS FUNCTION DOES NOT EXECUTE THE CHECK !!!
 pub fn (mut gitstructure GitStructure) repo_get(args RepoGetArgs) ?&GitRepo {
 	for r in gitstructure.repos {
+		// println(r)
 		if r.addr.name == args.name {
 			if args.account == '' || args.account == r.addr.account {
 				mut r2 := &gitstructure.repos[r.id]
@@ -79,6 +80,7 @@ pub fn (mut gitstructure GitStructure) repo_get(args RepoGetArgs) ?&GitRepo {
 			}
 		}
 	}
+	// println(args)
 	return error("Could not find repo for account:'$args.account' name:'$args.name'")
 }
 

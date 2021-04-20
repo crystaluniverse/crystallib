@@ -67,6 +67,9 @@ fn (mut publisher Publisher) find_sites_recursive(path string) ? {
 			if pathnew.contains('vlang_tools/templates') {
 				continue
 			}
+			if pathnew.contains('publishtools/templates') {
+				continue
+			}			
 			if os.exists(os.join_path(pathnew, 'wikiconfig.json')) {
 				content := os.read_file(os.join_path(pathnew, 'wikiconfig.json')) or {
 					return error('Failed to load json ${os.join_path(pathnew, 'wikiconfig.json')}')

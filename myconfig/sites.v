@@ -22,6 +22,16 @@ fn site_config(mut c ConfigRoot) {
 	}
 
 	c.sites << SiteConfig{
+		name: 'info_publishtools'
+		shortname: 'pubtools'
+		url: 'https://github.com/crystaluniverse/info_publishtools'
+		cat: SiteCat.wiki
+		descr: 'documentation for publishing tools'
+		domains: ['publishtools.threefold.io']
+		groups: [gr_tf1, gr_tf2]
+	}
+
+	c.sites << SiteConfig{
 		name: 'www_threefold_io'
 		shortname: 'threefold'
 		url: 'https://github.com/threefoldfoundation/www_threefold_io'
