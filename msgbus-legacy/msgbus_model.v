@@ -4,16 +4,6 @@ import crypto.md5
 import despiegk.crystallib.digitaltwin
 import despiegk.crystallib.resp2
 
-pub struct Expiration {
-pub mut:
-	// expiration in epoch
-	expiration int
-}
-
-fn (mut exp Expiration) epoch() int {
-	return exp.expiration
-}
-
 pub struct Message {
 pub mut:
 	// dot notation
@@ -35,7 +25,7 @@ pub mut:
 	schema string
 	// creation date in epoch (int)
 	epoch int
-	// direction 
+	// direction
 	direction Direction
 }
 

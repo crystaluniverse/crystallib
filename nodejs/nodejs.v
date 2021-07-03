@@ -1,9 +1,9 @@
 module nodejs
 
 import os
-import builder
-import process
-import myconfig
+import despiegk.crystallib.builder
+import despiegk.crystallib.process
+import despiegk.crystallib.myconfig
 
 // return string which represents init for npm
 pub fn init_string(cfg &myconfig.ConfigRoot) string {
@@ -36,12 +36,15 @@ pub fn install(cfg &myconfig.ConfigRoot) ? {
 
 	if !os.exists('$nodejspath/bin/node') {
 		println(' - will install nodejs (can take quite a while)')
+		
+		lts := cfg.nodejs.version.name.replace('v', '')
+
 		if cfg.nodejs.version.cat == myconfig.NodejsVersionEnum.lts {
 			script = '
 			set -e
 			export NVM_DIR=$base
 			source $base/nvm.sh
-			nvm install --lts
+			nvm install $lts
 			npm install --global @gridsome/cli
 			'
 		} else {

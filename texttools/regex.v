@@ -34,7 +34,7 @@ fn regex_rewrite(r string) ?string {
 			res << '[' + c + char_upper + ']'
 		} else if '0123456789'.contains(c) {
 			res << c
-		} else if  '_- '.contains(c) {
+		} else if '_- '.contains(c) {
 			// res << r"\[\\s _\\-\]*"
 			res << r' *'
 		} else if '\'"'.contains(c) {
@@ -92,7 +92,7 @@ pub fn (mut ri ReplaceInstructions) add(replacelist []string) ? {
 		replace_with := splitted[splitted.len - 1]
 		// last one not to be used
 		if splitted.len < 2 {
-			return error('Cannot add $i because needs to have 2 parts, wrong syntax, to regex instructions:\n\"$replacelist\"')
+			return error("Cannot add $i because needs to have 2 parts, wrong syntax, to regex instructions:\n\"$replacelist\"")
 		}
 		for item in splitted[0..(splitted.len - 1)] {
 			ri.add_item(item, replace_with) ?

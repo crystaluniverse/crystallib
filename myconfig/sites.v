@@ -37,10 +37,10 @@ fn site_config(mut c ConfigRoot) {
 		url: 'https://github.com/threefoldfoundation/www_threefold_io'
 		cat: SiteCat.web
 		descr: 'is our entry point for everyone, redirect to the detailed websites underneith.'
-		domains: ['www.threefold.io', 'www.threefold.me', 'threefold.me', 'new.threefold.io', 'staging.threefold.io',
-			'threefold.io',
-		]
+		domains: ['www.threefold.io', 'www.threefold.me', 'threefold.me', 'new.threefold.io',
+			'staging.threefold.io', 'threefold.io']
 		groups: [gr_tf1, gr_tf2]
+		trackingid: ''
 	}
 	c.sites << SiteConfig{
 		name: 'www_threefold_cloud'
@@ -50,6 +50,7 @@ fn site_config(mut c ConfigRoot) {
 		domains: ['cloud.threefold.io', 'cloud.threefold.me']
 		descr: 'for people looking to deploy solutions on top of a cloud, alternative to e.g. digital ocean'
 		acl: [ace1]
+		trackingid: ''
 	}
 	c.sites << SiteConfig{
 		name: 'www_threefold_farming'
@@ -58,6 +59,7 @@ fn site_config(mut c ConfigRoot) {
 		cat: SiteCat.web
 		domains: ['farming.threefold.io', 'farming.threefold.me']
 		descr: 'crypto & minining enthusiasts, be the internet, know about farming & tokens.'
+		trackingid: ''
 	}
 	c.sites << SiteConfig{
 		name: 'www_threefold_twin'
@@ -66,32 +68,28 @@ fn site_config(mut c ConfigRoot) {
 		cat: SiteCat.web
 		domains: ['mydigitaltwin.io', 'www.mydigitaltwin.io']
 		descr: 'you digital life'
+		trackingid: ''
 	}
 	c.sites << SiteConfig{
 		name: 'www_threefold_marketplace'
 		shortname: 'marketplace'
 		url: 'https://github.com/threefoldfoundation/www_threefold_marketplace'
 		cat: SiteCat.web
-		domains: ['now.threefold.io', 'marketplace.threefold.io', 'now.threefold.me', 'marketplace.threefold.me']
+		domains: ['now.threefold.io', 'marketplace.threefold.io', 'now.threefold.me',
+			'marketplace.threefold.me',
+		]
 		descr: 'apps for community builders, runs on top of evdc'
+		trackingid: ''
 	}
 	c.sites << SiteConfig{
 		name: 'www_conscious_internet'
 		shortname: 'aci'
 		url: 'https://github.com/threefoldfoundation/www_conscious_internet'
 		cat: SiteCat.web
-		domains: ['www.consciousinternet.org', 'eco.threefold.io', 'community.threefold.io', 'eco.threefold.me',
-			'community.threefold.me',
-		]
+		domains: ['www.consciousinternet.org', 'eco.threefold.io', 'community.threefold.io',
+			'eco.threefold.me', 'community.threefold.me']
 		descr: 'community around threefold, partners, friends, ...'
-	}
-	c.sites << SiteConfig{
-		name: 'www_threefold_tech'
-		shortname: 'tftech'
-		url: 'https://github.com/threefoldtech/www_threefold_tech'
-		cat: SiteCat.web
-		domains: ['www.threefold.tech', 'threefold.tech']
-		descr: 'cyberpandemic, use the tech to build your own solutions with, certification for TFGrid'
+		trackingid: ''
 	}
 	c.sites << SiteConfig{
 		name: 'www_examplesite'
@@ -100,6 +98,7 @@ fn site_config(mut c ConfigRoot) {
 		cat: SiteCat.web
 		domains: ['example.threefold.io']
 		descr: ''
+		trackingid: ''
 	}
 	c.sites << SiteConfig{
 		name: 'www_uhuru'
@@ -108,7 +107,29 @@ fn site_config(mut c ConfigRoot) {
 		cat: SiteCat.web
 		domains: ['www.uhuru.me']
 		descr: 'uhuru (freedom) peer2peer cloud.'
+		trackingid: ''
 	}
+
+	c.sites << SiteConfig{
+		name: 'www_digitaltwin'
+		shortname: 'digitaltwin'
+		url: 'https://github.com/threefoldtech/www_digitaltwin'
+		cat: SiteCat.web
+		domains: ['digitaltwin.threefold.io']
+		descr: 'Digital twin frontend'
+		trackingid: ''
+	}
+
+	c.sites << SiteConfig{
+		name: 'www_freeflow'
+		shortname: 'myfreeflow'
+		url: 'https://github.com/threefoldfoundation/www_freeflow'
+		cat: SiteCat.web
+		domains: ['www.myfreeflow.org']
+		descr: 'My freeflow website'
+		trackingid: ''
+	}
+
 	// c.sites << SiteConfig{
 	// 	name: 'www_mitaa'
 	// 	shortname: 'mitaa'
@@ -125,11 +146,19 @@ fn site_config(mut c ConfigRoot) {
 		// url: 'https://github.com/threefoldfoundation/info_foundation_archive'
 		domains: ['info.threefold.io', 'wiki.threefold.io']
 		descr: 'wiki for foundation, collaborate, what if farmings, tokens'
+		trackingid: '11'
+		opengraph: {
+			url: 'https://info.threefold.io'
+			title: 'ThreeFold | Knowledge'
+			description: 'All you need to know about ThreeFold.'
+			image: 'https://info.threefold.io/threefold__welcomepage.png'
+		}
 	}
 	// c.sites << SiteConfig{
 	// 	name: 'info_marketplace'
 	// 	shortname: 'marketplace'
-	// 	url: 'https://github.com/threefoldfoundation/info_marketplace'
+	// 	url: 'https://github.com/threefoldfoundation/info_marketplace',
+	//  trackingid: ""
 	// }
 	// c.sites << SiteConfig{
 	// 	name: 'info_uhuru'
@@ -138,6 +167,7 @@ fn site_config(mut c ConfigRoot) {
 	// 	domains: ['info.uhuru.me']
 	// 	branch: 's'
 	// 	descr: 'wiki for uhuru Peer2Peer Cloud.'
+	//  trackingid: ""
 	// }
 	c.sites << SiteConfig{
 		name: 'info_tag'
@@ -145,6 +175,7 @@ fn site_config(mut c ConfigRoot) {
 		url: 'https://github.com/takeactionglobal/info_tag'
 		domains: ['info.takeactionglobal.org']
 		descr: 'wiki for TAG.'
+		trackingid: ''
 	}
 	// c.sites << SiteConfig{
 	// 	name: 'info_mitaa'
@@ -152,6 +183,7 @@ fn site_config(mut c ConfigRoot) {
 	// 	url: 'https://github.com/mitaa-me/info_mitaa'
 	// 	domains: ['info.mitaa.me', 'info.mitaa.org']
 	// 	descr: 'wiki for Mitaa.'
+	//  trackingid: ""
 	// }
 	c.sites << SiteConfig{
 		name: 'info_sdk'
@@ -159,6 +191,13 @@ fn site_config(mut c ConfigRoot) {
 		url: 'https://github.com/threefoldfoundation/info_sdk'
 		domains: ['sdk.threefold.io']
 		descr: 'for IAC, devops, how to do Infrastruture As Code, 3bot, Ansible, tfgrid-sdk, ...'
+		trackingid: '14'
+		opengraph: {
+			url: 'https://sdk.threefold.io'
+			title: 'ThreeFold | Grid Manual (SDK)'
+			description: 'All you need to know about how to create and deploy IT Solutions on top of the ThreeFold P2P Cloud.'
+			image: 'https://sdk.threefold.io/sdk__storage_compute.png'
+		}
 	}
 	c.sites << SiteConfig{
 		name: 'info_legal'
@@ -166,6 +205,7 @@ fn site_config(mut c ConfigRoot) {
 		url: 'https://github.com/threefoldfoundation/info_legal'
 		domains: ['legal.threefold.io', 'legal-info.threefold.io', 'legal-wiki.threefold.io']
 		descr: ''
+		trackingid: '17'
 	}
 	c.sites << SiteConfig{
 		name: 'info_cloud'
@@ -173,28 +213,49 @@ fn site_config(mut c ConfigRoot) {
 		url: 'https://github.com/threefoldfoundation/info_cloud'
 		domains: ['cloud-info.threefold.io', 'cloud-wiki.threefold.io']
 		descr: 'how to use the cloud for deploying apps: evdc, kubernetes, planetary fs, ... + marketplace solutions '
+		trackingid: '16'
+		opengraph: {
+			url: 'https://cloud-info.threefold.io'
+			title: 'ThreeFold P2P Cloud | Knowledge'
+			description: 'All you need to know about the ThreeFold P2P Cloud and its offerings.'
+			image: 'https://cloud-info.threefold.io/cloud__cloud_node.png'
+		}
 	}
-	c.sites << SiteConfig{
-		name: 'info_tftech'
-		shortname: 'tftech'
-		url: 'https://github.com/threefoldtech/info_tftech'
-		domains: ['info.threefold.tech']
-		descr: ''
-	}
+	// c.sites << SiteConfig{
+	// 	name: 'info_tftech'
+	// 	shortname: 'tftech'
+	// 	url: 'https://github.com/threefoldtech/info_tftech'
+	// 	domains: ['info.threefold.tech']
+	// 	descr: ''
+	// 	trackingid: '15'
+	// }
 	c.sites << SiteConfig{
 		name: 'info_digitaltwin'
 		shortname: 'twin'
 		url: 'https://github.com/threefoldfoundation/info_digitaltwin.git'
 		domains: ['info.mydigitaltwin.io', 'wiki.mydigitaltwin.io']
 		descr: ''
+		trackingid: '13'
 	}
+
 	c.sites << SiteConfig{
-		name: 'info_bettertoken'
-		shortname: 'bt'
-		url: 'https://github.com/BetterToken/info_bettertoken.git'
-		domains: ['bt-info.threefold.io']
-		descr: ''
+		name: 'info_publishtools'
+		shortname: 'publishtools'
+		url: 'https://github.com/crystaluniverse/info_publishtools'
+		domains: ['publishtools-info.threefold.io']
+		descr: 'Publishtools Info'
+		trackingid: ''
 	}
+
+	// c.sites << SiteConfig{
+	// 	name: 'info_grid_operations'
+	// 	shortname: 'operations'
+	// 	url: 'https://github.com/threefoldtech/info_grid_operations'
+	// 	domains: ['operations-info.threefold.io']
+	// 	descr: 'Grid operations'
+	// 	trackingid: ""
+	// }
+
 	c.sites << SiteConfig{
 		name: 'data_threefold'
 		shortname: 'data'
@@ -202,5 +263,6 @@ fn site_config(mut c ConfigRoot) {
 		cat: SiteCat.data
 		domains: []string{}
 		descr: ''
+		trackingid: ''
 	}
 }

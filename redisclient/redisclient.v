@@ -9,7 +9,8 @@ import despiegk.crystallib.resp2
 
 pub struct Redis {
 pub mut:
-	socket net.TcpConn
+	connected bool
+	socket    net.TcpConn
 	// reader &io.BufferedReader
 }
 
@@ -34,10 +35,14 @@ pub enum KeyType {
 
 // https://redis.io/topics/protocol
 pub fn connect(addr string) ?Redis {
-	mut socket := net.dial_tcp(addr) ?
+	mut socket := net.dial_tcp(addr) or { return Redis{
+		connected: false
+	} }
+
 	socket.set_read_timeout(2 * time.second)
 
 	return Redis{
+		connected: true
 		socket: socket
 		// reader: io.new_buffered_reader(reader: io.make_reader(socket))
 	}
@@ -53,9 +58,9 @@ pub fn (mut r Redis) read_line() ?[]byte {
 			continue
 		}
 		if buf == '\n'.bytes() {
-			if out.bytestr() != ''{
-				println("readline result:'$out.bytestr()'")
-			}
+			// if out.bytestr() != '' {
+			// 	println("readline result:'$out.bytestr()'")
+			// }
 			return out
 		}
 		out << buf
@@ -84,6 +89,16 @@ fn (mut r Redis) write_line(data_ []byte) ? {
 	data << '\r'.bytes()
 	data << '\n'.bytes()
 	println(' >> ' + data.bytestr())
+
+	// mac os fix, this will fails if not connected
+	r.socket.peer_addr() or {
+		r.connected = false
+		println('[-] could not fetch peer address')
+		return
+	}
+
+	// this will silently close software
+	// if socket is not connected (on macos)
 	r.socket.write(data) ?
 }
 
@@ -93,22 +108,19 @@ fn (mut r Redis) write(data []byte) ? {
 
 // write resp2 value to the redis channel
 pub fn (mut r Redis) write_rval(val resp2.RValue) ? {
+	// macos: needed to avoid silent exit
+	r.socket.peer_addr() or {
+		println('[-] could not fetch peer address')
+		return
+	}
+
 	_ := r.socket.write(val.encode()) ?
 }
 
 // write list of strings to redis challen
 fn (mut r Redis) write_cmds(items []string) ? {
-	mut out := []string{}
-	mut c := 0
-	for v in items {
-		if c == 0 {
-			out << v
-		} else {
-			out << '\"$v\"'
-		}
-		c++
-	}
-	r.write_line(out.join(' ').bytes()) ?
+	a := resp2.r_list_bstring(items)
+	r.write_rval(a) ?
 }
 
 fn (mut r Redis) read(size int) ?[]byte {
@@ -118,5 +130,5 @@ fn (mut r Redis) read(size int) ?[]byte {
 }
 
 pub fn (mut r Redis) disconnect() {
-	r.socket.close() or { }
+	r.socket.close() or {}
 }

@@ -2,20 +2,33 @@ module myconfig
 
 import os
 
+pub struct OpenGraph {
+pub mut:
+	title        string
+	description  string
+	url          string
+	type_        string = 'article'
+	image        string
+	image_width  string = '1200'
+	image_height string = '630'
+}
+
 pub struct SiteConfig {
 pub mut:
-	name      string
-	url       string
-	branch    string
-	pull      bool // if set will pull but not reset
-	reset     bool // if set will reset & pull, reset means remove changes
-	cat       SiteCat
-	shortname string
-	path_code string
-	domains   []string
-	descr     string
-	groups    []TFGroup
-	acl       []SiteACE // access control list
+	name       string
+	url        string
+	branch     string
+	pull       bool // if set will pull but not reset
+	reset      bool // if set will reset & pull, reset means remove changes
+	cat        SiteCat
+	shortname  string
+	path_code  string
+	domains    []string
+	descr      string
+	groups     []TFGroup
+	acl        []SiteACE // access control list
+	trackingid string    // Matomo/Analytics
+	opengraph  OpenGraph
 }
 
 pub struct TFGroup {

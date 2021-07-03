@@ -2,6 +2,7 @@ module publishermod
 
 import despiegk.crystallib.texttools
 
+[heap]
 struct Publisher {
 mut:
 	gitlevel int
@@ -9,14 +10,13 @@ pub mut:
 	sites      []Site
 	pages      []Page
 	files      []File
-	defs 	   []Def
+	defs       []Def
 	site_names map[string]int
 	// maps definition name to page id
-	def_names     map[string]int
-	develop  bool
-	replacer ReplacerInstructions
+	def_names map[string]int
+	develop   bool
+	replacer  ReplacerInstructions
 }
-
 
 struct ReplacerInstructions {
 pub mut:
@@ -40,7 +40,6 @@ pub fn (mut publisher Publisher) def_get_by_id(id int) ?&Def {
 	return &publisher.defs[id]
 }
 
-
 pub fn (mut publisher Publisher) page_get_by_id(id int) ?&Page {
 	// println("page get by id: '$id'")
 	if id > publisher.pages.len {
@@ -49,7 +48,6 @@ pub fn (mut publisher Publisher) page_get_by_id(id int) ?&Page {
 	// println(publisher.pages[id])
 	return &publisher.pages[id]
 }
-
 
 pub fn (mut publisher Publisher) file_get_by_id(id int) ?&File {
 	if id > publisher.files.len {
@@ -61,12 +59,12 @@ pub fn (mut publisher Publisher) file_get_by_id(id int) ?&File {
 ////////////////////////////////////////////////////////////////
 
 pub fn (mut publisher Publisher) site_exists(name string) bool {
-	name2 := name_fix(name)
+	name2 := texttools.name_fix(name)
 	return name2 in publisher.site_names
 }
 
 pub fn (mut publisher Publisher) def_exists(name string) bool {
-	name2 := name_fix_no_underscore(name)
+	name2 := texttools.name_fix_no_underscore(name)
 	return name2 in publisher.def_names
 }
 
@@ -103,7 +101,7 @@ pub fn (mut publisher Publisher) page_exists(name string) bool {
 ////////////// GET BY NAME
 
 pub fn (mut publisher Publisher) site_get(namefull string) ?&Site {
-	sitename := name_fix(namefull)
+	sitename := texttools.name_fix(namefull)
 	if sitename in publisher.site_names {
 		mut site := publisher.site_get_by_id(publisher.site_names[sitename]) or {
 			// println(publisher.site_names)
@@ -115,9 +113,9 @@ pub fn (mut publisher Publisher) site_get(namefull string) ?&Site {
 }
 
 pub fn (mut publisher Publisher) def_get(namefull string) ?&Def {
-	mut defname := name_fix_no_underscore(namefull)
-	if defname.ends_with(".md"){
-		defname=defname[0..(defname.len-3)]
+	mut defname := texttools.name_fix_no_underscore(namefull)
+	if defname.ends_with('.md') {
+		defname = defname[0..(defname.len - 3)]
 	}
 	// println(" >>> defget: $defname")
 	if defname in publisher.def_names {
@@ -129,7 +127,6 @@ pub fn (mut publisher Publisher) def_get(namefull string) ?&Def {
 	}
 	return error('cannot find def: $defname')
 }
-
 
 // namefull is name with : if needed
 pub fn (mut publisher Publisher) files_get(namefull string) []&File {
@@ -177,9 +174,9 @@ pub fn (mut publisher Publisher) pages_get(namefull string) []&Page {
 pub fn (mut publisher Publisher) file_get(namefull string) ?&File {
 	sitename, itemname := publisher.name_split_alias(namefull) ?
 	// println(" >> file_get:'$sitename':'$itemname'")
-	if sitename != ""{
-		site := publisher.site_get(sitename)?
-		return site.file_get(itemname,mut publisher)
+	if sitename != '' {
+		site := publisher.site_get(sitename) ?
+		return site.file_get(itemname, mut publisher)
 	}
 	res := publisher.files_get(namefull)
 	if res.len == 0 {
@@ -195,9 +192,9 @@ pub fn (mut publisher Publisher) file_get(namefull string) ?&File {
 pub fn (mut publisher Publisher) page_get(namefull string) ?&Page {
 	sitename, itemname := publisher.name_split_alias(namefull) ?
 	// println(" >> page_get:'$sitename':'$itemname'")
-	if sitename != ""{
-		site := publisher.site_get(sitename)?
-		return site.page_get(itemname,mut publisher)
+	if sitename != '' {
+		site := publisher.site_get(sitename) ?
+		return site.page_get(itemname, mut publisher)
 	}
 	res := publisher.pages_get(namefull)
 	if res.len == 0 {

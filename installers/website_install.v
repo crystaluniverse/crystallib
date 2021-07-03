@@ -1,10 +1,10 @@
 module installers
 
 import os
-import myconfig
-import process
-import gittools
-import texttools
+import despiegk.crystallib.myconfig
+import despiegk.crystallib.process
+import despiegk.crystallib.gittools
+import despiegk.crystallib.texttools
 
 // Initialize (load wikis) only once when server starts
 pub fn website_install(name string, first bool, conf &myconfig.ConfigRoot) ? {
@@ -63,12 +63,12 @@ pub fn website_install(name string, first bool, conf &myconfig.ConfigRoot) ? {
 	set -e
 
 	if [ "$first" = "true" ]; then
-		nvm use --lts
+		#nvm use --lts
 		npm install
 		rsync -ra --delete node_modules/ $base/node_modules/
 	else
 		rsync -ra --delete $base/node_modules/ node_modules/ 
-		nvm use --lts
+		#nvm use --lts
 		npm install
 	fi
 
@@ -90,12 +90,16 @@ pub fn website_install(name string, first bool, conf &myconfig.ConfigRoot) ? {
 	source $base/nvm.sh
 
 	set -e
-	nvm use --lts
+	#nvm use --lts
 
 	export PATH=$nodejspath/bin:\$PATH
 
-	gridsome develop
-
+	if [ -f vue.config.js ]; then
+    	npm run-script serve
+	else
+		gridsome develop
+	fi
+	
 	'
 
 	script_build := '
@@ -108,12 +112,16 @@ pub fn website_install(name string, first bool, conf &myconfig.ConfigRoot) ? {
 	source $base/nvm.sh
 
 	set -e
-	nvm use --lts
+	#nvm use --lts
 
 	export PATH=$nodejspath/bin:\$PATH
 
 	set +e
-	gridsome build
+	if [ -f vue.config.js ]; then
+    	npm run-script build
+	else
+		gridsome build
+	fi
 
 	set -e
 

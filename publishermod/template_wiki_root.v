@@ -1,32 +1,42 @@
 module publishermod
+
 import os
-import myconfig
+import despiegk.crystallib.myconfig
 
-fn template_wiki_root(reponame string, repourl string) string {
-    mut cfg := myconfig.get(true) or {panic("can not get config")}
-    mut p := os.join_path(cfg.paths.base, "static")
-    p = ".$p"
+fn template_wiki_root(reponame string, repourl string, trackingid string, opengraph myconfig.OpenGraph) string {
+	mut cfg := myconfig.get() or { panic('can not get config') }
+	mut p := os.join_path(cfg.paths.base, 'static')
+	mut crispwebsiteid := '1a5a5241-91cb-4a41-8323-5ba5ec574da0'
+	if reponame == 'twin' {
+		crispwebsiteid = 'fa9a7744-5454-4e83-99ae-9ef342d3bff4'
+	}
 
-    index_wiki := r'
+	p = '.$p'
+
+	index_wiki := r'
     <!DOCTYPE html>
     <html>
     <head>
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="googletagmanager.js"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag("js", new Date());
-
-            gtag("config", "UA-100065546-4");
-        </script>
-      <script type="text/javascript" src="cookie-consent.js"></script> <script type="text/javascript"> document.addEventListener("DOMContentLoaded", function () { cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","palette":"light","language":"en","website_name":"https://wiki.threefold.io/","cookies_policy_url":"https://wiki.threefold.io/#/privacypolicy"}); }); </script> <script type="text/plain" cookie-consent="tracking" async src="https://www.googletagmanager.com/gtag/js?id=UA-100065546-4"></script> <script type="text/plain" cookie-consent="tracking"> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag("js", new Date()); gtag("config", "UA-100065546-4"); </script> <script type="text/plain" cookie-consent="functionality">window.$crisp=[];window.CRISP_WEBSITE_ID="1a5a5241-91cb-4a41-8323-5ba5ec574da0";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>    
+      <script type="text/javascript" src="cookie-consent.js"></script> 
+      <script type="text/javascript"> document.addEventListener("DOMContentLoaded", function () { cookieconsent.run({"notice_banner_type":"headline","consent_type":"express","palette":"light","language":"en","website_name":"https://wiki.threefold.io/","cookies_policy_url":"https://wiki.threefold.io/#/privacypolicy"}); }); </script>
+      <script type="text/plain" cookie-consent="functionality">window.$crisp=[];window.CRISP_WEBSITE_ID="@crispwebsiteid";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>    
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta charset="UTF-8">
+      <meta property="og:url"                content="@og_url" />
+      <meta property="og:type"               content="@og_type" />
+      <meta property="og:title"              content="@og_title" />
+      <meta property="og:description"        content="@og_description" />
+      <meta property="og:image"              content="@og_image" />
+      <meta property="og:image:width" content="@og_image_width" />
+      <meta property="og:image:height" content="@og_image_height" />
+      
       <link rel="stylesheet" href="theme-simple.css">
 
     <style>
+        :root {
+            --graph-size: 750 !important;
+        }
         .markdown-section {
             max-width: 60em !important;  
             padding-left: 0 !important;
@@ -52,6 +62,33 @@ fn template_wiki_root(reponame string, repourl string) string {
     </style>
     </head>
     <body>
+    <!-- Matomo -->
+        <script type="text/javascript">
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(["trackPageView"]);
+        _paq.push(["enableLinkTracking"]);
+    
+        window.addEventListener("hashchange", function() {
+            console.log(window.location.hash.substr(2))
+            _paq.push(["trackPageView"]);
+            _paq.push(["enableLinkTracking"]);
+            _paq.push(["setDocumentTitle", window.location.hash.substr(2)]);
+             _paq.push(["setCustomUrl", "/" + window.location.hash.substr(2)]);
+              
+        });
+
+        (function() {
+            var u="//analytics.threefold.io/";
+            _paq.push(["setTrackerUrl", u+"matomo.php"]);
+            _paq.push(["setSiteId", "@trackingid"]);
+             _paq.push(["setCustomUrl", "/" + window.location.hash.substr(2)]);
+            var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0];
+            g.type="text/javascript"; g.async=true; g.src=u+"matomo.js"; s.parentNode.insertBefore(g,s);
+        })();
+        </script>
+    <!-- End Matomo Code -->
+
     <!-- markmap is based on d3, so must load those files first. -->
      <script src="d3.min.js"></script>
     <script src="d3-flextree.js"></script>
@@ -150,8 +187,8 @@ fn template_wiki_root(reponame string, repourl string) string {
       <script src="docsify-mermaid.js"> 
       <script>mermaid.initialize({ startOnLoad: true, securityLevel:\'loose\' });</script>
       <script src="docsify-mindmap.min.js"></script>
-       <link rel="stylesheet" href="docsify-charty.min.css">
-       <link rel="stylesheet" href="charty-custom-style.css">
+      <link rel="stylesheet" href="docsify-charty.min.css">
+      <link rel="stylesheet" href="charty-custom-style.css">
       <script src="docsify-charty.min.js"></script>
 
       <script>
@@ -172,18 +209,28 @@ fn template_wiki_root(reponame string, repourl string) string {
         
     </script>
     </body>
+    
     </html>
     '
 
+	mut out := index_wiki
+	out = out.replace('@reponame', reponame)
+	out = out.replace('@repourl', repourl)
+	out = out.replace('@trackingid', trackingid)
+	out = out.replace('@crispwebsiteid', crispwebsiteid)
 
-    mut out := index_wiki
-    out = out.replace("@reponame",reponame)
-    out = out.replace("@repourl",repourl)
-    return out
+	out = out.replace('@og_url', opengraph.url)
+	out = out.replace('@og_title', opengraph.title)
+	out = out.replace('@og_type', opengraph.type_)
+	out = out.replace('@og_description', opengraph.description)
+	out = out.replace('@og_image_width', opengraph.image_width)
+	out = out.replace('@og_image_height', opengraph.image_height)
+	out = out.replace('@og_image', opengraph.image)
+
+	return out
 }
 
-fn template_wiki_root_save(destdir string, reponame string, repourl string){
-    out := template_wiki_root(reponame, repourl)
-    os.write_file("$destdir/index.html",out) or {panic(err)}
+fn template_wiki_root_save(destdir string, reponame string, repourl string, trackingid string, opengraph myconfig.OpenGraph) {
+	out := template_wiki_root(reponame, repourl, trackingid, opengraph)
+	os.write_file('$destdir/index.html', out) or { panic(err) }
 }
-

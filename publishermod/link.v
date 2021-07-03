@@ -1,5 +1,6 @@
 module publishermod
 
+import despiegk.crystallib.texttools
 import os
 
 enum ParseStatus {
@@ -72,7 +73,15 @@ fn (link Link) server_get() string {
 		return '[$link.description](${link.site}__${link.filename}.md)'
 	}
 	if link.cat == LinkType.file {
-		return '![$link.description](${link.site}__$link.filename  $link.extra)'
+		if link.isimage {
+			return '![$link.description](${link.site}__$link.filename  $link.extra)'
+		}
+		// return '[$link.description](/${link.site}__$link.filename  $link.extra)'
+		if link.extra == '' {
+			return '<a href="${link.site}__$link.filename"> $link.description </a>'
+		} else {
+			return '<a href="${link.site}__$link.filename $link.extra"> $link.description </a>'
+		}
 	}
 	return link.original_get()
 }
@@ -96,8 +105,12 @@ fn (mut link Link) source_get(sitename string) string {
 		}
 		mut filename := ''
 
-		if link.site == sitename && link.isimage {
-			filename = 'img/$link.filename'
+		if link.site == sitename {
+			if link.isimage {
+				filename = 'img/$link.filename'
+			} else {
+				filename = '$link.filename'
+			}
 		}
 
 		mut j := ''
@@ -131,7 +144,7 @@ fn (link Link) replace(text string, replacewith string) string {
 fn (mut link Link) init_() {
 	// see if its an external link or internal
 	// mut linkstate := LinkState.init
-	if link.original_link.contains('://'){
+	if link.original_link.contains('://') {
 		// linkstate = LinkState.ok
 		link.isexternal = true
 	}
@@ -141,7 +154,9 @@ fn (mut link Link) init_() {
 		return
 	}
 
-	if link.original_link.trim(' ').starts_with('http') || link.original_link.trim(' ').starts_with('/') || link.original_link.trim(' ').starts_with('..') {
+	if link.original_link.trim(' ').starts_with('http')
+		|| link.original_link.trim(' ').starts_with('/')
+		|| link.original_link.trim(' ').starts_with('..') {
 		link.cat = LinkType.html
 		return
 	}
@@ -166,7 +181,7 @@ fn (mut link Link) init_() {
 		if link.filename.contains(':') {
 			splitted2 := link.filename.split(':')
 			if splitted2.len == 2 {
-				link.site = name_fix(splitted2[0])
+				link.site = texttools.name_fix(splitted2[0])
 				if link.site.starts_with('info_') {
 					link.site = link.site[5..]
 				}
@@ -183,7 +198,7 @@ fn (mut link Link) init_() {
 		link.filename = link.filename.replace('\\', '/')
 
 		base_of_link_filename := os.base(link.filename)
-		fixed_name := name_fix(base_of_link_filename)
+		fixed_name := texttools.name_fix(base_of_link_filename)
 		fixed_name_lower := fixed_name.to_lower()
 		fixed_name_lower_trimmed := fixed_name_lower.trim('.')
 		link.filename = fixed_name_lower_trimmed
@@ -224,7 +239,7 @@ fn (mut link Link) init_() {
 		}
 	}
 
-	if  link.filename.contains(':') {
+	if link.filename.contains(':') {
 		panic("should not have ':' in link for page or file (2).\n$link")
 	}
 }
@@ -378,7 +393,8 @@ pub fn link_parser(text string) ParseResult {
 				// original += char
 				if char == ')' {
 					// end of capture group
-					mut link := link_new(capturegroup_pre.trim(' '), capturegroup_post.trim(' '),isimage)
+					mut link := link_new(capturegroup_pre.trim(' '), capturegroup_post.trim(' '),
+						isimage)
 					parseresult.links << link
 					capturegroup_pre = ''
 					capturegroup_post = ''

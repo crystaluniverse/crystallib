@@ -48,8 +48,8 @@ pub fn (mut publisher Publisher) errors_get(site Site) ?PublisherErrors {
 pub fn (mut publisher Publisher) flatten() ? {
 	mut dest_file := ''
 
-	mut config := myconfig.get(true) ?
-	config.update_staticfiles(false)?
+	mut config := myconfig.get() ?
+	config.update_staticfiles(false) ?
 
 	publisher.check() // makes sure we checked all
 
@@ -63,7 +63,6 @@ pub fn (mut publisher Publisher) flatten() ? {
 			page: page_def.name
 			site: site_def.name
 		}
-	
 	}
 
 	for mut site in publisher.sites {
@@ -95,9 +94,11 @@ pub fn (mut publisher Publisher) flatten() ? {
 
 		mut site_config := config.site_wiki_get(site.name) ?
 
-		template_wiki_root_save(dest_dir, site.name, site_config.url)
+		template_wiki_root_save(dest_dir, site.name, site_config.url, site_config.trackingid,
+			site_config.opengraph)
 
-		mut special := ['readme.md', 'README.md', '_sidebar.md', '_navbar.md', 'sidebar.md', 'navbar.md', "favicon.ico"]
+		mut special := ['readme.md', 'README.md', '_sidebar.md', '_navbar.md', 'sidebar.md',
+			'navbar.md', 'favicon.ico']
 
 		for file in special {
 			dest_file = file
@@ -132,13 +133,11 @@ pub fn (mut publisher Publisher) flatten() ? {
 			trace_progress('    ${file_counter:4}, creating file $dest_file ...')
 			os.cp(fileobj.path_get(mut publisher), dest_file) ?
 		}
-
 	}
-		myconfig.save('') ?
-
+	myconfig.save('') ?
 }
 
-[if trace_progress]
+[if trace_progress?]
 fn trace_progress(msg string) {
 	eprintln(msg)
 }

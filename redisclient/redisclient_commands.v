@@ -1,4 +1,5 @@
 module redisclient
+
 import despiegk.crystallib.resp2
 import time
 
@@ -6,15 +7,29 @@ pub fn (mut r Redis) set(key string, value string) ? {
 	return r.send_expect_ok(['SET', key, value])
 }
 
+pub fn (mut r Redis) set_ex(key string, value string, ex string) ? {
+	return r.send_expect_ok(['SET', key, value, 'EX', ex])
+}
+
 pub fn (mut r Redis) set_opts(key string, value string, opts SetOpts) bool {
-	ex := if opts.ex == -4 && opts.px == -4 { '' } else if opts.ex != -4 { ' EX $opts.ex' } else { ' PX $opts.px' }
-	nx := if opts.nx == false && opts.xx == false { '' } else if opts.nx == true { ' NX' } else { ' XX' }
+	ex := if opts.ex == -4 && opts.px == -4 {
+		''
+	} else if opts.ex != -4 {
+		' EX $opts.ex'
+	} else {
+		' PX $opts.px'
+	}
+	nx := if opts.nx == false && opts.xx == false {
+		''
+	} else if opts.nx == true {
+		' NX'
+	} else {
+		' XX'
+	}
 	keep_ttl := if opts.keep_ttl == false { '' } else { ' KEEPTTL' }
 	message := 'SET "$key" "$value"$ex$nx$keep_ttl\r\n'
-	r.socket.write(message.bytes()) or {
-		return false
-	}
-	time.sleep(1*time.millisecond)
+	r.socket.write(message.bytes()) or { return false }
+	time.sleep(1 * time.millisecond)
 	res := r.socket.read_line()
 	match res {
 		'+OK\r\n' {
@@ -47,6 +62,11 @@ pub fn (mut r Redis) hset(key string, skey string, value string) ? {
 pub fn (mut r Redis) hget(key string, skey string) ?string {
 	// mut key2 := key.trim("\"'")
 	return r.send_expect_strnil(['HGET', key, skey])
+}
+
+pub fn (mut r Redis) hgetall(key string) ?[]resp2.RValue {
+	// mut key2 := key.trim("\"'")
+	return r.send_expect_list(['HGETALL', key])
 }
 
 pub fn (mut r Redis) hexists(key string, skey string) ?bool {
@@ -135,6 +155,13 @@ pub fn (mut r Redis) lpop(key string) ?string {
 	return r.send_expect_strnil(['LPOP', key])
 }
 
+pub fn (mut r Redis) blpop(keys []string, timeout string) ?[]resp2.RValue {
+	mut cmds := ['BLPOP']
+	cmds << keys
+	cmds << timeout
+	return r.send_expect_list(cmds)
+}
+
 pub fn (mut r Redis) rpop(key string) ?string {
 	return r.send_expect_strnil(['RPOP', key])
 }
@@ -201,7 +228,7 @@ pub fn (mut r Redis) scan(cursor int) ?(string, []string) {
 	mut values := []string{}
 
 	for i in 0 .. resp2.get_redis_array_len(res[1]) {
-		values << resp2.get_redis_value_by_index(res[1],i)
+		values << resp2.get_redis_value_by_index(res[1], i)
 	}
 
 	return resp2.get_redis_value(res[0]), values
